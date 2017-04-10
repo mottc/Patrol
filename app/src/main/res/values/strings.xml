@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Patrol</string>
+    <string name="patrol_staff">巡更人员</string>
+    <string name="manager">管理人员</string>
+    <string name="enter">进入</string>
+    <string name="choose_your_job">请选择您的职业</string>
+</resources>
