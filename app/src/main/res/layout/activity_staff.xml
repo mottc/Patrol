@@ -4,10 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.mottc.patrol.staff.StaffActivity">
 
     <include layout="@layout/bar"/>
 
-
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bnv_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:menu="@menu/staff_menu_bottom_navigation"/>
 
 </RelativeLayout>
