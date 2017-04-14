@@ -1,0 +1,50 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mottc.patrol.staff.AccountFragment">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_toRightOf="@id/avatar"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:gravity="bottom"
+        android:paddingLeft="20dp"
+        android:text="账户"/>
+
+    <TextView
+        android:id="@+id/boss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@id/avatar"
+        android:text="管理人："/>
+
+    <TextView
+        android:id="@+id/boss_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/boss"
+        android:layout_below="@id/avatar"/>
+
+    <Button
+        android:id="@+id/quit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:text="@string/quit"
+        android:textColor="@android:color/white"/>
+
+</RelativeLayout>

@@ -2,22 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/action_home"
-        android:title="Home"
+        android:id="@+id/action_patrol"
+        android:title="@string/patrol"
         android:icon="@android:drawable/btn_radio"/>
 
     <item
-        android:id="@+id/action_explore"
-        android:title="Explore"
+        android:id="@+id/action_task"
+        android:title="@string/task"
         android:icon="@android:drawable/btn_radio"/>
 
     <item
         android:id="@+id/action_me"
-        android:title="Me"
-        android:icon="@android:drawable/btn_radio"/>
-    <item
-        android:id="@+id/action_e"
-        android:title="Me"
+        android:title="@string/account"
         android:icon="@android:drawable/btn_radio"/>
 
 </menu>

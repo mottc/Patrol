@@ -7,7 +7,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.mottc.patrol.staff.StaffActivity">
 
-    <include layout="@layout/bar"/>
+    <include
+        android:id="@+id/include"
+        layout="@layout/bar"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/include"
+        android:layout_above="@+id/bnv_menu"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bnv_menu"

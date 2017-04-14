@@ -4,4 +4,12 @@
     <string name="manager">管理人员</string>
     <string name="enter">进入</string>
     <string name="choose_your_job">请选择您的职业</string>
+    <string name="patrol">巡更</string>
+    <string name="task">任务</string>
+    <string name="account">账户</string>
+    <string name="upload_photo">拍照上传</string>
+    <string name="call_help">遇险求助</string>
+    <string name="quit">退出登录</string>
+
+
 </resources>
