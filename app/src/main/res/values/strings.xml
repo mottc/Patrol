@@ -10,6 +10,8 @@
     <string name="upload_photo">拍照上传</string>
     <string name="call_help">遇险求助</string>
     <string name="quit">退出登录</string>
+    <string name="examine">查看</string>
+    <string name="issued">分配</string>
 
 
 </resources>

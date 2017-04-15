@@ -75,6 +75,8 @@ public class StaffActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        Location location = new Location();
     }
 
     private void setupViewPager(ViewPager viewPager) {
