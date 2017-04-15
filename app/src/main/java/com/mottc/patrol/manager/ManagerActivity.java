@@ -1,5 +1,6 @@
 package com.mottc.patrol.manager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,15 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.mottc.patrol.R;
-import com.mottc.patrol.staff.AccountFragment;
-import com.mottc.patrol.staff.PatrolFragment;
-import com.mottc.patrol.staff.TaskFragment;
+import com.mottc.patrol.issued.IssuedActivity;
+import com.mottc.patrol.manager.dummy.DummyContent;
 import com.mottc.patrol.staff.ViewPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ManagerActivity extends AppCompatActivity {
+public class ManagerActivity extends AppCompatActivity implements IssuedFragment.OnListFragmentInteractionListener,ExamineFragment.OnListFragmentInteractionListener {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -85,9 +85,14 @@ public class ManagerActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(PatrolFragment.newInstance(),getString(R.string.patrol));
-        adapter.addFragment(TaskFragment.newInstance(),getString(R.string.task));
-        adapter.addFragment(AccountFragment.newInstance(),getString(R.string.account));
+        adapter.addFragment(ExamineFragment.newInstance(),getString(R.string.examine));
+        adapter.addFragment(IssuedFragment.newInstance(),getString(R.string.issued));
+        adapter.addFragment(ManagerAccountFragment.newInstance(),getString(R.string.account));
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+        startActivity(new Intent(this, IssuedActivity.class));
     }
 }
