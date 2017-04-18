@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,4 +7,126 @@
     android:layout_height="match_parent"
     tools:context="com.mottc.patrol.staff.TaskDetailActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <include
+        android:id="@+id/task_detail_bar"
+        layout="@layout/bar"/>
+
+    <TextView
+        android:id="@+id/executor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/task_detail_bar"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:text="任务执行人："/>
+
+    <TextView
+        android:id="@+id/executor_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/task_detail_bar"
+        android:layout_toRightOf="@id/executor"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"/>
+
+
+    <TextView
+        android:id="@+id/announcer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/executor"
+        android:layout_marginTop="40dp"
+
+        android:layout_marginLeft="20dp"
+        android:text="任务分配人："/>
+
+    <TextView
+        android:id="@+id/announcer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/executor"
+        android:layout_toRightOf="@id/announcer"
+        android:layout_marginTop="40dp"
+
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/announcer"
+        android:layout_marginTop="40dp"
+
+        android:layout_marginLeft="20dp"
+        android:text="时间："/>
+
+    <TextView
+        android:id="@+id/time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/announcer"
+        android:layout_toRightOf="@id/time"
+        android:layout_marginTop="40dp"
+
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/time"
+        android:layout_marginTop="40dp"
+
+        android:layout_marginLeft="20dp"
+        android:text="地点："/>
+
+    <TextView
+        android:id="@+id/location_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/time"
+        android:layout_toRightOf="@id/location"
+        android:layout_marginTop="40dp"
+
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location"
+        android:layout_marginTop="40dp"
+
+        android:layout_marginLeft="20dp"
+        android:text="完成情况："/>
+
+    <TextView
+        android:id="@+id/status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location"
+        android:layout_toRightOf="@id/status"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"/>
+
+
+
+    <Button
+        android:id="@id/done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:text="任务完成，点击这里"
+        android:textColor="@android:color/white"
+       />
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

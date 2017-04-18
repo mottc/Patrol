@@ -105,7 +105,8 @@
             android:name=".issued.IssuedActivity"
             android:theme="@style/LoginActivityTheme">
         </activity>
-        <activity android:name=".staff.TaskDetailActivity">
+        <activity android:name=".staff.TaskDetailActivity"
+                  android:theme="@style/LoginActivityTheme">
         </activity>
     </application>
 

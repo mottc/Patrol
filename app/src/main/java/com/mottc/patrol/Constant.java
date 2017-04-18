@@ -8,5 +8,7 @@ package com.mottc.patrol;
  */
 public class Constant {
     public static final String KEY_USERNAME = "local_username";
+    public static final int TASK_STATUS_UNDONE = 0;
+    public static final int TASK_STATUS_DONE = 1;
 
 }

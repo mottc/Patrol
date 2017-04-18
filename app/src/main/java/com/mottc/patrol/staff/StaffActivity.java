@@ -2,6 +2,7 @@ package com.mottc.patrol.staff;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -18,6 +19,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
+import com.mottc.patrol.Constant;
 import com.mottc.patrol.PatrolApplication;
 import com.mottc.patrol.R;
 import com.mottc.patrol.data.entity.Task;
@@ -110,8 +112,7 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
 
     @Override
     public void OnTaskListClick(Task item) {
-        item.getId();
-
+        startActivity(new Intent(this, TaskDetailActivity.class).putExtra("taskId", item.getId()));
     }
 
     private class PatrolTaskAddListener implements EMMessageListener{
@@ -123,6 +124,7 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
 
                 task.setExecutor(PatrolApplication.getInstance().getCurrentUserName());
                 task.setAnnouncer(message.getFrom());
+                task.setStatus(Constant.TASK_STATUS_UNDONE);
                 try {
                     JSONObject content = new JSONObject(((EMTextMessageBody)message.getBody()).getMessage());
                     task.setTime(content.getString("time"));
