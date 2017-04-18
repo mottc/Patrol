@@ -9,14 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hyphenate.EMValueCallBack;
+import com.hyphenate.chat.EMClient;
 import com.mottc.patrol.R;
-import com.mottc.patrol.manager.dummy.DummyContent;
-import com.mottc.patrol.manager.dummy.DummyContent.DummyItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExamineFragment extends Fragment {
 
 
-    private OnListFragmentInteractionListener mListener;
+    private OnExamineClickListener mListener;
+    private List<String> mStaffs;
+    private ExamineRecyclerViewAdapter mExamineRecyclerViewAdapter;
+
+    private static ExamineFragment sExamineFragment = new ExamineFragment();
+
 
 
     public ExamineFragment() {
@@ -25,16 +33,15 @@ public class ExamineFragment extends Fragment {
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static ExamineFragment newInstance() {
-        ExamineFragment fragment = new ExamineFragment();
 
-        return fragment;
+
+        return sExamineFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        mStaffs = new ArrayList();
     }
 
     @Override
@@ -42,15 +49,22 @@ public class ExamineFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_examine, container, false);
 
-        // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(linearLayoutManager);
 
-            recyclerView.setAdapter(new ExamineRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            mExamineRecyclerViewAdapter = new ExamineRecyclerViewAdapter(mStaffs, mListener);
+            recyclerView.setAdapter(mExamineRecyclerViewAdapter);
         }
+
+
+        updateStaffList();
+
+
         return view;
     }
 
@@ -58,8 +72,8 @@ public class ExamineFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnExamineClickListener) {
+            mListener = (OnExamineClickListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -72,18 +86,33 @@ public class ExamineFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
+    public void updateStaffList() {
+
+        EMClient.getInstance().contactManager().aysncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
+            @Override
+            public void onSuccess(List<String> value) {
+                mStaffs.clear();
+                mStaffs.addAll(value);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mExamineRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+
+            }
+        });
+
+    }
+
+
+    public interface OnExamineClickListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onExamineClick(String item);
     }
 }

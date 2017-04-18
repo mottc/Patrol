@@ -8,8 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.widget.RadioGroup;
 
+import com.hyphenate.chat.EMClient;
+import com.mottc.patrol.PatrolApplication;
 import com.mottc.patrol.R;
 import com.mottc.patrol.login.LoginActivity;
+import com.mottc.patrol.manager.ManagerActivity;
+import com.mottc.patrol.staff.StaffActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +34,19 @@ public class ChooseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //如果登录成功过，直接进入主页面
+        if (EMClient.getInstance().isLoggedInBefore()) {
+            if (PatrolApplication.getInstance().getCurrentUserName().startsWith("staff_")) {
+                startActivity(new Intent(this, StaffActivity.class));
+            } else {
+                startActivity(new Intent(this, ManagerActivity.class));
+            }
+            finish();
+            return;
+        }
+
+
         setContentView(R.layout.activity_choose);
         ButterKnife.bind(this);
         sChooseActivity = this;

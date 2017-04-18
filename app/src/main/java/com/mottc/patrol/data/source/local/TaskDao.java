@@ -27,7 +27,7 @@ public class TaskDao extends AbstractDao<Task, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Executor = new Property(1, String.class, "executor", false, "EXECUTOR");
         public final static Property Announcer = new Property(2, String.class, "announcer", false, "ANNOUNCER");
-        public final static Property Time = new Property(3, java.util.Date.class, "time", false, "TIME");
+        public final static Property Time = new Property(3, String.class, "time", false, "TIME");
         public final static Property Location = new Property(4, String.class, "location", false, "LOCATION");
         public final static Property Status = new Property(5, int.class, "status", false, "STATUS");
     }
@@ -48,7 +48,7 @@ public class TaskDao extends AbstractDao<Task, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"EXECUTOR\" TEXT," + // 1: executor
                 "\"ANNOUNCER\" TEXT," + // 2: announcer
-                "\"TIME\" INTEGER," + // 3: time
+                "\"TIME\" TEXT," + // 3: time
                 "\"LOCATION\" TEXT," + // 4: location
                 "\"STATUS\" INTEGER NOT NULL );"); // 5: status
     }
@@ -78,9 +78,9 @@ public class TaskDao extends AbstractDao<Task, Long> {
             stmt.bindString(3, announcer);
         }
  
-        java.util.Date time = entity.getTime();
+        String time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(4, time.getTime());
+            stmt.bindString(4, time);
         }
  
         String location = entity.getLocation();
@@ -109,9 +109,9 @@ public class TaskDao extends AbstractDao<Task, Long> {
             stmt.bindString(3, announcer);
         }
  
-        java.util.Date time = entity.getTime();
+        String time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(4, time.getTime());
+            stmt.bindString(4, time);
         }
  
         String location = entity.getLocation();
@@ -132,7 +132,7 @@ public class TaskDao extends AbstractDao<Task, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // executor
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // announcer
-            cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)), // time
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // time
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // location
             cursor.getInt(offset + 5) // status
         );
@@ -144,7 +144,7 @@ public class TaskDao extends AbstractDao<Task, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setExecutor(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAnnouncer(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setTime(cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)));
+        entity.setTime(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setLocation(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setStatus(cursor.getInt(offset + 5));
      }

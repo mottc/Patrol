@@ -9,34 +9,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hyphenate.EMValueCallBack;
+import com.hyphenate.chat.EMClient;
 import com.mottc.patrol.R;
-import com.mottc.patrol.manager.dummy.DummyContent;
-import com.mottc.patrol.manager.dummy.DummyContent.DummyItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IssuedFragment extends Fragment {
 
 
-    private OnListFragmentInteractionListener mListener;
+    private OnIssuedClickListener mListener;
+    private List<String> staffList;
+    private IssuedRecyclerViewAdapter mIssuedRecyclerViewAdapter;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+    private static IssuedFragment sIssuedFragment = new IssuedFragment();
+
     public IssuedFragment() {
     }
 
 
     public static IssuedFragment newInstance() {
-        IssuedFragment fragment = new IssuedFragment();
-
-        return fragment;
+        return sIssuedFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        staffList = new ArrayList<>();
     }
 
     @Override
@@ -44,16 +44,32 @@ public class IssuedFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_issued, container, false);
 
-        // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            mIssuedRecyclerViewAdapter = new IssuedRecyclerViewAdapter(staffList, mListener);
 
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-            recyclerView.setAdapter(new IssuedRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(mIssuedRecyclerViewAdapter);
         }
+
+        updateIssuedList();
         return view;
+    }
+
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnIssuedClickListener) {
+            mListener = (OnIssuedClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
     }
 
 
@@ -63,8 +79,29 @@ public class IssuedFragment extends Fragment {
         mListener = null;
     }
 
-    public interface OnListFragmentInteractionListener {
+
+    public void updateIssuedList() {
+        EMClient.getInstance().contactManager().aysncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
+            @Override
+            public void onSuccess(List<String> value) {
+                staffList.clear();
+                staffList.addAll(value);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIssuedRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+
+            }
+        });
+    }
+    public interface OnIssuedClickListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void issuedClick(String item);
     }
 }

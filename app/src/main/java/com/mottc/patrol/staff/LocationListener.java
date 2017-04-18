@@ -1,12 +1,8 @@
 package com.mottc.patrol.staff;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.Poi;
-import com.mottc.patrol.PatrolApplication;
 
 import java.util.List;
 
@@ -110,8 +106,8 @@ public class LocationListener implements BDLocationListener {
             }
         }
 
-        Log.i("BaiduLocationApiDem", sb.toString());
-        Toast.makeText(PatrolApplication.applicationContext, sb.toString(), Toast.LENGTH_SHORT).show();
+//        Log.i("BaiduLocationApiDem", sb.toString());
+//        Toast.makeText(PatrolApplication.applicationContext, sb.toString(), Toast.LENGTH_SHORT).show();
 
     }
 

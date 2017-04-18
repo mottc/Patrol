@@ -11,7 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 import com.mottc.patrol.R;
+import com.mottc.patrol.data.entity.PatrolDate;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class IssuedActivity extends AppCompatActivity{
+public class IssuedActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -39,12 +42,16 @@ public class IssuedActivity extends AppCompatActivity{
     @BindView(R.id.done)
     Button mDone;
 
+    private String username;
+    private PatrolDate mPatrolDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issued);
         ButterKnife.bind(this);
+        username = this.getIntent().getStringExtra("username");
+
         mToolbar.setTitle("分配任务");
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.back);
@@ -55,6 +62,8 @@ public class IssuedActivity extends AppCompatActivity{
             }
         });
 
+        mExecutor.setText(username.substring(6));
+
     }
 
     @OnClick({R.id.time_button, R.id.done})
@@ -63,10 +72,11 @@ public class IssuedActivity extends AppCompatActivity{
             case R.id.time_button:
                 mDatePicker.setVisibility(View.VISIBLE);
                 mTimeButton.setVisibility(View.INVISIBLE);
-                mDatePicker.init(2017, 6, 6, new DatePicker.OnDateChangedListener() {
+                mDatePicker.init(2017, 5, 6, new DatePicker.OnDateChangedListener() {
                     @Override
                     public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
+                        mPatrolDate = new PatrolDate(year, monthOfYear + 1, dayOfMonth);
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(mDatePicker.getYear(), mDatePicker.getMonth(), mDatePicker.getDayOfMonth(),
                                 0, 0);
@@ -86,6 +96,15 @@ public class IssuedActivity extends AppCompatActivity{
                     Toast.makeText(this, "还未输入地点！", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+
+                mLocation.clearFocus();
+
+                String content = "{\"time\": " + mPatrolDate.toString() + "," + "\"location\":" + mLocation.getText().toString() + "}";
+                EMMessage message = EMMessage.createTxtSendMessage(content, username);
+                EMClient.getInstance().chatManager().sendMessage(message);
+
+                Toast.makeText(this, "已发送", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

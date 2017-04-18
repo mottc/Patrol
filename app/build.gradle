@@ -41,6 +41,7 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.2'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.hyphenate:hyphenate-sdk-lite:3.2.3'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }

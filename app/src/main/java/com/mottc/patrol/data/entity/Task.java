@@ -1,10 +1,8 @@
 package com.mottc.patrol.data.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-
-import java.util.Date;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created with Android Studio
@@ -19,11 +17,11 @@ public class Task {
 
     private String executor;
     private String announcer;
-    private Date time;
+    private String time;
     private String location;
     private int status;
-    @Generated(hash = 299963169)
-    public Task(Long id, String executor, String announcer, Date time,
+    @Generated(hash = 1813469754)
+    public Task(Long id, String executor, String announcer, String time,
             String location, int status) {
         this.id = id;
         this.executor = executor;
@@ -53,10 +51,10 @@ public class Task {
     public void setAnnouncer(String announcer) {
         this.announcer = announcer;
     }
-    public Date getTime() {
+    public String getTime() {
         return this.time;
     }
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
     public String getLocation() {
@@ -71,4 +69,5 @@ public class Task {
     public void setStatus(int status) {
         this.status = status;
     }
+
 }

@@ -16,6 +16,7 @@ import com.mottc.patrol.data.source.local.DaoSession;
 import com.mottc.patrol.data.source.local.TaskDao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TaskFragment extends Fragment {
@@ -24,15 +25,17 @@ public class TaskFragment extends Fragment {
     private DaoSession mDaoSession;
     private List taskList;
     private OnTaskListClickListener mListener;
+    private TaskRecyclerViewAdapter mTaskRecyclerViewAdapter;
 
     public TaskFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+    private static TaskFragment sTaskFragment = new TaskFragment();
+            // TODO: Customize parameter initialization
+
     public static TaskFragment newInstance() {
-        TaskFragment fragment = new TaskFragment();
-        return fragment;
+
+        return sTaskFragment;
     }
 
     @Override
@@ -41,12 +44,15 @@ public class TaskFragment extends Fragment {
         taskList = new ArrayList();
         mDaoSession = PatrolApplication.getInstance().getDaoSession();
         getAllTasks();
+        mTaskRecyclerViewAdapter = new TaskRecyclerViewAdapter(taskList, mListener);
     }
 
     private void getAllTasks() {
-        List list = mDaoSession.getTaskDao().queryBuilder().where(TaskDao.Properties.Executor.eq("")).list();
+        String username = PatrolApplication.getInstance().getCurrentUserName();
+        List list = mDaoSession.getTaskDao().queryBuilder().where(TaskDao.Properties.Executor.eq(username)).list();
         taskList.clear();
         taskList.addAll(list);
+        Collections.reverse(taskList);
     }
 
     @Override
@@ -60,15 +66,36 @@ public class TaskFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new TaskRecyclerViewAdapter(taskList, mListener));
+            recyclerView.setAdapter(mTaskRecyclerViewAdapter);
         }
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnTaskListClickListener) {
+            mListener = (OnTaskListClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void updateTaskList() {
+        getAllTasks();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTaskRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     public interface OnTaskListClickListener {
