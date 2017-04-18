@@ -96,10 +96,18 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
             }
         });
 
-        Location location = new Location();
+//        Location location = new Location();
 
+        sendStatusInfo(Constant.ONLINE);
         EMClient.getInstance().contactManager().setContactListener(new PatrolStaffContactListener());
         EMClient.getInstance().chatManager().addMessageListener(new PatrolTaskAddListener());
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sendStatusInfo(Constant.OFFLINE);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -113,6 +121,23 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
     @Override
     public void OnTaskListClick(Task item) {
         startActivity(new Intent(this, TaskDetailActivity.class).putExtra("taskId", item.getId()));
+    }
+
+    private void sendStatusInfo(final String status) {
+        EMClient.getInstance().contactManager().aysncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
+            @Override
+            public void onSuccess(List<String> value) {
+                if (value.size() != 0) {
+                    EMMessage message = EMMessage.createTxtSendMessage(status, value.get(0));
+                    EMClient.getInstance().chatManager().sendMessage(message);
+                }
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+
+            }
+        });
     }
 
     private class PatrolTaskAddListener implements EMMessageListener{

@@ -6,12 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hyphenate.EMValueCallBack;
-import com.hyphenate.chat.EMClient;
+import com.mottc.patrol.Constant;
 import com.mottc.patrol.R;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class ExamineFragment extends Fragment {
         }
 
 
-        updateStaffList();
+//        updateStaffList(null,null);
 
 
         return view;
@@ -85,30 +85,53 @@ public class ExamineFragment extends Fragment {
         mListener = null;
     }
 
-    public void updateStaffList() {
+    public void updateStaffList(String user,String status) {
 
-        EMClient.getInstance().contactManager().aysncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
+        if (status.equals(Constant.ONLINE)) {
+            mStaffs.add(user);
+            Log.i("ExamineFragment", "updateStaffList: " + "on");
+        } else if (status.equals(Constant.OFFLINE)) {
+            mStaffs.remove(user);
+            Log.i("ExamineFragment", "updateStaffList: " + "off");
+
+        }
+
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void onSuccess(List<String> value) {
-                mStaffs.clear();
-                mStaffs.addAll(value);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mExamineRecyclerViewAdapter.notifyDataSetChanged();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onError(int error, String errorMsg) {
-
+            public void run() {
+                mExamineRecyclerViewAdapter.notifyDataSetChanged();
             }
         });
 
+//        EMClient.getInstance().contactManager().aysncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
+//            @Override
+//            public void onSuccess(List<String> value) {
+//                mStaffs.clear();
+//                mStaffs.addAll(value);
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mExamineRecyclerViewAdapter.notifyDataSetChanged();
+//
+//                    }
+//                });
+//
+//            }
+//
+//            @Override
+//            public void onError(int error, String errorMsg) {
+//
+//            }
+//        });
+
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mStaffs.clear();
+    }
 
     public interface OnExamineClickListener {
         // TODO: Update argument type and name

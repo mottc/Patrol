@@ -20,12 +20,18 @@ import android.widget.Toast;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMContactListener;
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
+import com.mottc.patrol.Constant;
 import com.mottc.patrol.PatrolApplication;
 import com.mottc.patrol.R;
 import com.mottc.patrol.choose.ChooseActivity;
 import com.mottc.patrol.issued.IssuedActivity;
 import com.mottc.patrol.staff.ViewPagerAdapter;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +50,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
 
     private MenuItem mMenuItem = null;
     private PatrolManagerContactListener mPatrolManagerContactListener;
+    private PatrolMessageListener mPatrolMessageListener;
 
 
     @Override
@@ -99,6 +106,8 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
         });
 
         mPatrolManagerContactListener = new PatrolManagerContactListener();
+        mPatrolMessageListener = new PatrolMessageListener();
+        EMClient.getInstance().chatManager().addMessageListener(mPatrolMessageListener);
         EMClient.getInstance().contactManager().setContactListener(mPatrolManagerContactListener);
 
     }
@@ -116,6 +125,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
     public void issuedClick(String item) {
         startActivity(new Intent(this, IssuedActivity.class).putExtra("username", item));
     }
+
     @Override
     public void onExamineClick(String item) {
         startActivity(new Intent(this, IssuedActivity.class).putExtra("username", item));
@@ -262,11 +272,10 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
         });
     }
 
-     private class PatrolManagerContactListener implements EMContactListener {
+    private class PatrolManagerContactListener implements EMContactListener {
         @Override
         public void onContactAdded(String username) {
 
-            ExamineFragment.newInstance().updateStaffList();
             IssuedFragment.newInstance().updateIssuedList();
 
 
@@ -288,7 +297,6 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
 
 
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify((int) System.currentTimeMillis(), notification);
-
 
 
 //            NotificationCompat.Builder builder = new NotificationCompat.Builder(getParent())
@@ -317,13 +325,54 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
         @Override
         public void onFriendRequestDeclined(String username) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getParent())
-                    .setContentTitle(username+"已有管理者，不能添加为员工")
+                    .setContentTitle(username + "已有管理者，不能添加为员工")
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true);
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify((int) System.currentTimeMillis(), builder.build());
 
         }
+    }
+
+    private class PatrolMessageListener implements EMMessageListener {
+        @Override
+        public void onMessageReceived(List<EMMessage> messages) {
+
+            for (EMMessage message : messages) {
+                if (message.getType() == EMMessage.Type.TXT) {
+                    if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.ONLINE)) {
+                        ExamineFragment.newInstance().updateStaffList(message.getFrom(),Constant.ONLINE);
+                    } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.OFFLINE)) {
+                        ExamineFragment.newInstance().updateStaffList(message.getFrom(),Constant.OFFLINE);
+                    } else {
+
+                    }
+                } else if (message.getType() == EMMessage.Type.IMAGE) {
+
+                }
+            }
+        }
+
+        @Override
+        public void onCmdMessageReceived(List<EMMessage> messages) {
+
+        }
+
+        @Override
+        public void onMessageRead(List<EMMessage> messages) {
+
+        }
+
+        @Override
+        public void onMessageDelivered(List<EMMessage> messages) {
+
+        }
+
+        @Override
+        public void onMessageChanged(EMMessage message, Object change) {
+
+        }
+
     }
 }
 
