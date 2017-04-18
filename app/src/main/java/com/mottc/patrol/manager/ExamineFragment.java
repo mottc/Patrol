@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,11 +88,8 @@ public class ExamineFragment extends Fragment {
 
         if (status.equals(Constant.ONLINE)) {
             mStaffs.add(user);
-            Log.i("ExamineFragment", "updateStaffList: " + "on");
         } else if (status.equals(Constant.OFFLINE)) {
             mStaffs.remove(user);
-            Log.i("ExamineFragment", "updateStaffList: " + "off");
-
         }
 
         getActivity().runOnUiThread(new Runnable() {

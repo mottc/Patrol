@@ -112,6 +112,13 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EMClient.getInstance().chatManager().removeMessageListener(mPatrolMessageListener);
+        EMClient.getInstance().contactManager().removeContactListener(mPatrolManagerContactListener);
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(ExamineFragment.newInstance(), getString(R.string.examine));
@@ -128,7 +135,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
 
     @Override
     public void onExamineClick(String item) {
-        startActivity(new Intent(this, IssuedActivity.class).putExtra("username", item));
+        startActivity(new Intent(this, MapActivity.class).putExtra("username", item));
     }
 
     @OnClick(R.id.more)
@@ -341,11 +348,9 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
             for (EMMessage message : messages) {
                 if (message.getType() == EMMessage.Type.TXT) {
                     if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.ONLINE)) {
-                        ExamineFragment.newInstance().updateStaffList(message.getFrom(),Constant.ONLINE);
+                        ExamineFragment.newInstance().updateStaffList(message.getFrom(), Constant.ONLINE);
                     } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.OFFLINE)) {
-                        ExamineFragment.newInstance().updateStaffList(message.getFrom(),Constant.OFFLINE);
-                    } else {
-
+                        ExamineFragment.newInstance().updateStaffList(message.getFrom(), Constant.OFFLINE);
                     }
                 } else if (message.getType() == EMMessage.Type.IMAGE) {
 

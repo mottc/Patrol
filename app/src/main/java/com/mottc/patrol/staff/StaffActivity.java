@@ -44,6 +44,9 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
     ViewPager mViewpager;
 
     private MenuItem mMenuItem = null;
+    private PatrolTaskAddListener mPatrolTaskAddListener;
+    private PatrolStaffContactListener mPatrolStaffContactListener;
+    private Location mLocation;
 
 
     @Override
@@ -99,8 +102,12 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
 //        Location location = new Location();
 
         sendStatusInfo(Constant.ONLINE);
-        EMClient.getInstance().contactManager().setContactListener(new PatrolStaffContactListener());
-        EMClient.getInstance().chatManager().addMessageListener(new PatrolTaskAddListener());
+
+        mPatrolTaskAddListener = new PatrolTaskAddListener();
+        mPatrolStaffContactListener = new PatrolStaffContactListener();
+
+        EMClient.getInstance().contactManager().setContactListener(mPatrolStaffContactListener);
+        EMClient.getInstance().chatManager().addMessageListener(mPatrolTaskAddListener);
     }
 
 
@@ -108,6 +115,8 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
     protected void onDestroy() {
         super.onDestroy();
         sendStatusInfo(Constant.OFFLINE);
+        EMClient.getInstance().chatManager().removeMessageListener(mPatrolTaskAddListener);
+        EMClient.getInstance().contactManager().removeContactListener(mPatrolStaffContactListener);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -145,21 +154,25 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
         public void onMessageReceived(List<EMMessage> messages) {
 
             for (EMMessage message : messages) {
-                Task task = new Task();
-
-                task.setExecutor(PatrolApplication.getInstance().getCurrentUserName());
-                task.setAnnouncer(message.getFrom());
-                task.setStatus(Constant.TASK_STATUS_UNDONE);
-                try {
-                    JSONObject content = new JSONObject(((EMTextMessageBody)message.getBody()).getMessage());
-                    task.setTime(content.getString("time"));
-                    task.setLocation(content.getString("location"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.ASK_FOR_LOCATION)) {
+                    mLocation = new Location();
+                } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.STOP_ASK_FOR_LOCATION)) {
+                    mLocation.stopGetLocation();
+                } else {
+                    Task task = new Task();
+                    task.setExecutor(PatrolApplication.getInstance().getCurrentUserName());
+                    task.setAnnouncer(message.getFrom());
+                    task.setStatus(Constant.TASK_STATUS_UNDONE);
+                    try {
+                        JSONObject content = new JSONObject(((EMTextMessageBody)message.getBody()).getMessage());
+                        task.setTime(content.getString("time"));
+                        task.setLocation(content.getString("location"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    PatrolApplication.getInstance().getDaoSession().getTaskDao().insert(task);
+                    TaskFragment.newInstance().updateTaskList();
                 }
-
-                PatrolApplication.getInstance().getDaoSession().getTaskDao().insert(task);
-                TaskFragment.newInstance().updateTaskList();
             }
         }
 
