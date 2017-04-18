@@ -1,11 +1,13 @@
 package com.mottc.patrol.staff;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mottc.patrol.Constant;
 import com.mottc.patrol.R;
 import com.mottc.patrol.data.entity.Task;
 
@@ -34,6 +36,14 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
         holder.mContentView.setText(mValues.get(position).getTime());
 
+        if (mValues.get(position).getStatus() == Constant.TASK_STATUS_UNDONE) {
+            holder.mStatus.setText("未完成");
+            holder.mStatus.setTextColor(Color.RED);
+        } else {
+            holder.mStatus.setText("已完成");
+            holder.mStatus.setTextColor(Color.BLACK);
+        }
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,11 +64,13 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mContentView;
+        public final TextView mStatus;
         public Task mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            mStatus = (TextView) view.findViewById(R.id.status);
             mContentView = (TextView) view.findViewById(R.id.content);
         }
     }

@@ -3,6 +3,7 @@ package com.mottc.patrol.manager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -52,11 +53,9 @@ public class ExamineFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
             recyclerView.setLayoutManager(linearLayoutManager);
-
             mExamineRecyclerViewAdapter = new ExamineRecyclerViewAdapter(mStaffs, mListener);
             recyclerView.setAdapter(mExamineRecyclerViewAdapter);
         }

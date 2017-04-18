@@ -88,6 +88,7 @@ public class TaskFragment extends Fragment {
         mListener = null;
     }
 
+
     public void updateTaskList() {
         getAllTasks();
         getActivity().runOnUiThread(new Runnable() {
