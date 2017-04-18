@@ -49,9 +49,9 @@ public class MapActivity extends AppCompatActivity {
     }
 
 
-    private void markLocation(double altitude, double latitude) {
+    private void markLocation(double latitude, double longitude) {
 
-        LatLng current = new LatLng(altitude, latitude);
+        LatLng current = new LatLng(latitude, longitude);
         MapStatusUpdate mapStatus = MapStatusUpdateFactory.newLatLngZoom(current, 18);
         mBaiduMap.setMapStatus(mapStatus);
         // 开启定位图层
@@ -59,8 +59,8 @@ public class MapActivity extends AppCompatActivity {
         // 构造定位数据
         MyLocationData locData = new MyLocationData.Builder()
                 .accuracy(0)
-                .latitude(altitude)
-                .longitude(latitude)
+                .latitude(latitude)
+                .longitude(longitude)
                 .build();
         // 设置定位数据
         mBaiduMap.setMyLocationData(locData);
@@ -119,8 +119,8 @@ public class MapActivity extends AppCompatActivity {
                     JSONObject content = null;
                     try {
                         content = new JSONObject(locationJson);
-                        markLocation(content.getDouble("altitude"), content.getDouble("latitude"));
-                        Log.i("LocationListener", "onMessageReceived: " + content.getDouble("altitude"));
+                        markLocation(content.getDouble("latitude"),content.getDouble("longitude"));
+                        Log.i("LocationListener", "onMessageReceived: " + content.getDouble("longitude"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

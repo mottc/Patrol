@@ -7,20 +7,12 @@ package com.mottc.patrol.data.entity;
  * Time: 21:25
  */
 public class PatrolLocation {
-    private double altitude;
     private double latitude;
+    private double longitude;
 
-    public PatrolLocation(double altitude, double latitude) {
-        this.altitude = altitude;
+    public PatrolLocation(double latitude, double longitude) {
         this.latitude = latitude;
-    }
-
-    public double getAltitude() {
-        return altitude;
-    }
-
-    public void setAltitude(double altitude) {
-        this.altitude = altitude;
+        this.longitude = longitude;
     }
 
     public double getLatitude() {
@@ -29,5 +21,13 @@ public class PatrolLocation {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

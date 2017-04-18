@@ -1,5 +1,7 @@
 package com.mottc.patrol.staff;
 
+import android.util.Log;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.hyphenate.EMValueCallBack;
@@ -23,11 +25,12 @@ public class LocationListener implements BDLocationListener {
     public void onReceiveLocation(BDLocation location) {
 
 
-        final String content = Constant.LOCATION_CALLBACK +"{\"altitude\": " + location.getAltitude() + "," + "\"latitude\":" + location.getLatitude() + "}";
+        final String content = Constant.LOCATION_CALLBACK +"{\"latitude\": " + location.getLongitude() + "," + "\"longitude\":" + location.getLatitude() + "}";
         EMClient.getInstance().contactManager().aysncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
             @Override
             public void onSuccess(final List<String> value) {
                 if (value.size() != 0) {
+                    Log.i("LocationListener", "onSuccess: " + content);
                     EMMessage message = EMMessage.createTxtSendMessage(content, value.get(0));
                     EMClient.getInstance().chatManager().sendMessage(message);
                 }
