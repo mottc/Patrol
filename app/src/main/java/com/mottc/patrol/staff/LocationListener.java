@@ -25,7 +25,7 @@ public class LocationListener implements BDLocationListener {
     public void onReceiveLocation(BDLocation location) {
 
 
-        final String content = Constant.LOCATION_CALLBACK +"{\"latitude\": " + location.getLongitude() + "," + "\"longitude\":" + location.getLatitude() + "}";
+        final String content = Constant.LOCATION_CALLBACK +"{\"latitude\": " + location.getLatitude() + "," + "\"longitude\":" + location.getLongitude() + "}";
         EMClient.getInstance().contactManager().aysncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
             @Override
             public void onSuccess(final List<String> value) {
