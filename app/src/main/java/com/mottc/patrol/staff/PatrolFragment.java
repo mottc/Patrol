@@ -1,14 +1,20 @@
 package com.mottc.patrol.staff;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
@@ -16,6 +22,7 @@ import com.hyphenate.chat.EMMessage;
 import com.mottc.patrol.Constant;
 import com.mottc.patrol.R;
 import com.mottc.patrol.utils.CommonUtils;
+import com.mottc.patrol.utils.PermissionsUtils;
 
 import java.io.File;
 import java.util.List;
@@ -41,6 +48,8 @@ public class PatrolFragment extends Fragment {
 
     private String fileName;
     private static final int CAMERA_REQUEST_CODE = 1;
+    public static final int REQUEST_CODE_ASK_CAMERA = 123;
+
 
 
     public PatrolFragment() {
@@ -66,6 +75,24 @@ public class PatrolFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_CAMERA:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    startCamera();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(getActivity(), "未授权使用相机", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @OnClick({upload, R.id.help})
@@ -101,7 +128,18 @@ public class PatrolFragment extends Fragment {
     }
 
     private void uploadPhoto() {
-        startCamera();
+        PermissionsUtils.verifyStoragePermissions(getActivity());
+        if (Build.VERSION.SDK_INT >= 23) {
+            int checkCallPhonePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
+            if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_ASK_CAMERA);
+                return;
+            } else {
+                startCamera();
+            }
+        } else {
+            startCamera();
+        }
     }
 
     private void startCamera() {
@@ -116,15 +154,20 @@ public class PatrolFragment extends Fragment {
         startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // 结果码不等于取消时候
         if (resultCode != RESULT_CANCELED) {
 
-            File picture = new File(Environment.getExternalStorageDirectory().getPath() + "/PatrolPic/upload/" + fileName);
+            switch (requestCode) {
 
-            sendImage(picture.getAbsolutePath());
+                case CAMERA_REQUEST_CODE:
+                    File picture = new File(
+                            Environment.getExternalStorageDirectory().getPath() + "/PatrolPic/upload/" + fileName);
+
+                    sendImage(picture.getAbsolutePath());
+                    break;
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -135,7 +178,6 @@ public class PatrolFragment extends Fragment {
             @Override
             public void onSuccess(final List<String> value) {
                 if (value.size() != 0) {
-
                     EMMessage message = EMMessage.createImageSendMessage(path, true, value.get(0));
                     EMClient.getInstance().chatManager().sendMessage(message);
                 }

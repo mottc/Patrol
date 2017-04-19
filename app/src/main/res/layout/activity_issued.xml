@@ -16,13 +16,15 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_below="@id/issued_bar"
-        android:src="@mipmap/ic_launcher"/>
+        android:scaleType="fitXY"
+        android:src="@drawable/staff"/>
 
     <TextView
         android:id="@+id/executor"
         android:layout_toRightOf="@id/avatar"
         android:layout_width="match_parent"
         android:layout_height="90dp"
+        android:layout_below="@id/issued_bar"
         android:gravity="bottom"
         android:paddingLeft="20dp"
         android:text="账户"/>

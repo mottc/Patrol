@@ -3,6 +3,7 @@ package com.mottc.patrol.staff;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -11,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMessageListener;
@@ -23,6 +25,7 @@ import com.mottc.patrol.Constant;
 import com.mottc.patrol.PatrolApplication;
 import com.mottc.patrol.R;
 import com.mottc.patrol.data.entity.Task;
+import com.mottc.patrol.utils.PermissionsUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.mottc.patrol.R.string.task;
+import static com.mottc.patrol.utils.PermissionsUtils.REQUEST_CODE_ASK_LOCATION;
 
 public class StaffActivity extends AppCompatActivity implements TaskFragment.OnTaskListClickListener {
 
@@ -47,6 +51,7 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
     private PatrolTaskAddListener mPatrolTaskAddListener;
     private PatrolStaffContactListener mPatrolStaffContactListener;
     private Location mLocation;
+    private NotificationManager mNotificationManager;
 
 
     @Override
@@ -57,6 +62,7 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
         mToolbar.setTitle("巡更");
         setSupportActionBar(mToolbar);
         setupViewPager(mViewpager);
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -108,6 +114,28 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
 
         EMClient.getInstance().contactManager().setContactListener(mPatrolStaffContactListener);
         EMClient.getInstance().chatManager().addMessageListener(mPatrolTaskAddListener);
+
+        PermissionsUtils.getLocationPermissions(this);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_LOCATION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    Toast.makeText(this, "您已授权定位", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    // Permission Denied
+                    Toast.makeText(this, "您未授权定位！\n如需定位，手动开启", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+        }
     }
 
 
@@ -121,9 +149,9 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(PatrolFragment.newInstance(),getString(R.string.patrol));
-        adapter.addFragment(TaskFragment.newInstance(),getString(task));
-        adapter.addFragment(AccountFragment.newInstance(),getString(R.string.account));
+        adapter.addFragment(PatrolFragment.newInstance(), getString(R.string.patrol));
+        adapter.addFragment(TaskFragment.newInstance(), getString(task));
+        adapter.addFragment(AccountFragment.newInstance(), getString(R.string.account));
         viewPager.setAdapter(adapter);
     }
 
@@ -149,7 +177,20 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
         });
     }
 
-    private class PatrolTaskAddListener implements EMMessageListener{
+    private class PatrolTaskAddListener implements EMMessageListener {
+        public void patrolNotification(String content) {
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle("")
+                    .setContentText(content)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true);
+
+            mNotificationManager.notify((int) System.currentTimeMillis(), builder.build());
+
+        }
         @Override
         public void onMessageReceived(List<EMMessage> messages) {
 
@@ -159,12 +200,13 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
                 } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.STOP_ASK_FOR_LOCATION)) {
                     mLocation.stopGetLocation();
                 } else {
+
                     Task task = new Task();
                     task.setExecutor(PatrolApplication.getInstance().getCurrentUserName());
                     task.setAnnouncer(message.getFrom());
                     task.setStatus(Constant.TASK_STATUS_UNDONE);
                     try {
-                        JSONObject content = new JSONObject(((EMTextMessageBody)message.getBody()).getMessage());
+                        JSONObject content = new JSONObject(((EMTextMessageBody) message.getBody()).getMessage());
                         task.setTime(content.getString("time"));
                         task.setLocation(content.getString("location"));
                     } catch (JSONException e) {
@@ -172,6 +214,7 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
                     }
                     PatrolApplication.getInstance().getDaoSession().getTaskDao().insert(task);
                     TaskFragment.newInstance().updateTaskList();
+                    patrolNotification("您收到一个新任务");
                 }
             }
         }
@@ -199,17 +242,28 @@ public class StaffActivity extends AppCompatActivity implements TaskFragment.OnT
     }
 
     private class PatrolStaffContactListener implements EMContactListener {
+
+        public void notificationWithoutIntent(String content) {
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle("")
+                    .setContentText(content)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true);
+
+            mNotificationManager.notify((int) System.currentTimeMillis(), builder.build());
+
+        }
+
         @Override
         public void onContactAdded(String username) {
 
             AccountFragment.newInstance().setManagerName();
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getParent())
-                   .setContentTitle("您已成为"+username+"的员工")
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setAutoCancel(true);
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify((int) System.currentTimeMillis(), builder.build());
+            notificationWithoutIntent("您已成为" + username.substring(8) + "的员工");
+
         }
 
         @Override

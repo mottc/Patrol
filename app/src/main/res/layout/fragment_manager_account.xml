@@ -9,7 +9,8 @@
         android:id="@+id/avatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:scaleType="fitXY"
+        android:src="@drawable/boss"/>
 
     <TextView
         android:id="@+id/username"

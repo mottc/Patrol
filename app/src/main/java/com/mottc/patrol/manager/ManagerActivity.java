@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,6 +52,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
     private MenuItem mMenuItem = null;
     private PatrolManagerContactListener mPatrolManagerContactListener;
     private PatrolMessageListener mPatrolMessageListener;
+    private NotificationManager mNotificationManager;
 
 
     @Override
@@ -63,6 +63,8 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
         mToolbar.setTitle("管理");
         setSupportActionBar(mToolbar);
         setupViewPager(mViewpager);
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -282,38 +284,28 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
     }
 
     private class PatrolManagerContactListener implements EMContactListener {
+
+        public void notificationWithoutIntent(String content) {
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle("")
+                    .setContentText(content)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true);
+            mNotificationManager.notify((int) System.currentTimeMillis(), builder.build());
+
+        }
+
         @Override
         public void onContactAdded(String username) {
 
             IssuedFragment.newInstance().updateIssuedList();
 
 
-            Notification.Builder builder = new Notification.Builder(getParent());
+            notificationWithoutIntent(username.substring(6) + "已成为您的员工");
 
-
-            builder.setTicker("hello");//手机状态栏的提示；
-
-            builder.setWhen(System.currentTimeMillis());//设置时间
-
-            builder.setContentTitle("通知栏通知");//设置标题
-
-            builder.setContentText("我来自NotificationDemo");//设置通知内容
-
-
-            builder.setDefaults(Notification.DEFAULT_ALL);//设置震动
-
-            Notification notification = builder.build();//4.1以上
-
-
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify((int) System.currentTimeMillis(), notification);
-
-
-//            NotificationCompat.Builder builder = new NotificationCompat.Builder(getParent())
-//                    .setContentTitle(username+"已成为您的员工")
-//                    .setPriority(Notification.PRIORITY_HIGH)
-//                    .setDefaults(Notification.DEFAULT_ALL)
-//                    .setAutoCancel(true);
-//            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify((int) System.currentTimeMillis(), builder.build());
         }
 
         @Override
@@ -333,13 +325,8 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
 
         @Override
         public void onFriendRequestDeclined(String username) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getParent())
-                    .setContentTitle(username + "已有管理者，不能添加为员工")
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setAutoCancel(true);
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify((int) System.currentTimeMillis(), builder.build());
 
+            notificationWithoutIntent(username.substring(6) + "已有管理者，不能添加为员工");
         }
     }
 
@@ -362,6 +349,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
                         });
                     }
                 } else if (message.getType() == EMMessage.Type.IMAGE) {
+//                TODO:    显示一个Intent通知
                     Toast.makeText(ManagerActivity.this, ((EMImageMessageBody) message.getBody()).getThumbnailUrl()
                             , Toast.LENGTH_SHORT).show();
                 }
@@ -390,7 +378,6 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
 
 
         private void showDialog(String username) {
-            Log.i("PatrolMessageListener", "showDialog: " + "收到警告！");
             AlertDialog.Builder builder = new AlertDialog.Builder(ManagerActivity.this);
             builder.setTitle("警告！");//设置标题
             builder.setMessage(username.substring(6) + "遇到危险！");//设置内容
