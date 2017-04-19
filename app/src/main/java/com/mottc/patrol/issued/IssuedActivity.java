@@ -104,6 +104,7 @@ public class IssuedActivity extends AppCompatActivity {
                 EMMessage message = EMMessage.createTxtSendMessage(content, username);
                 EMClient.getInstance().chatManager().sendMessage(message);
 
+                mDone.setClickable(false);
                 Toast.makeText(this, "已发送", Toast.LENGTH_SHORT).show();
                 break;
         }

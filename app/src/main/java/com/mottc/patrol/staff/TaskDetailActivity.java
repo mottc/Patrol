@@ -76,6 +76,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         mDone.setClickable(false);
         Task task = new Task(mTask.getId(), mTask.getExecutor(), mTask.getAnnouncer(), mTask.getTime(), mTask.getLocation(), Constant.TASK_STATUS_DONE);
         mTaskDao.update(task);
+
         TaskFragment.newInstance().updateTaskList();
     }
 }

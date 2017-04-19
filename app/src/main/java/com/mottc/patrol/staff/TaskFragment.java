@@ -90,6 +90,7 @@ public class TaskFragment extends Fragment {
 
 
     public void updateTaskList() {
+        mDaoSession.clear();
         getAllTasks();
         getActivity().runOnUiThread(new Runnable() {
             @Override
