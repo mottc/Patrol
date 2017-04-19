@@ -57,6 +57,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="patrol.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path"/>
+        </provider>
+
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="3LEbETDfFd7G43NPQRCfttcEljWG5rXh"/>

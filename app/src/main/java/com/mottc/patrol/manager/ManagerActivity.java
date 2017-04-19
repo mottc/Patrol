@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.mottc.patrol.Constant;
@@ -345,15 +347,23 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
         @Override
         public void onMessageReceived(List<EMMessage> messages) {
 
-            for (EMMessage message : messages) {
+            for (final EMMessage message : messages) {
                 if (message.getType() == EMMessage.Type.TXT) {
                     if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.ONLINE)) {
                         ExamineFragment.newInstance().updateStaffList(message.getFrom(), Constant.ONLINE);
                     } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.OFFLINE)) {
                         ExamineFragment.newInstance().updateStaffList(message.getFrom(), Constant.OFFLINE);
+                    } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.ASK_FOR_HELP)) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showDialog(message.getFrom());
+                            }
+                        });
                     }
                 } else if (message.getType() == EMMessage.Type.IMAGE) {
-
+                    Toast.makeText(ManagerActivity.this, ((EMImageMessageBody) message.getBody()).getThumbnailUrl()
+                            , Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -376,6 +386,21 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
         @Override
         public void onMessageChanged(EMMessage message, Object change) {
 
+        }
+
+
+        private void showDialog(String username) {
+            Log.i("PatrolMessageListener", "showDialog: " + "收到警告！");
+            AlertDialog.Builder builder = new AlertDialog.Builder(ManagerActivity.this);
+            builder.setTitle("警告！");//设置标题
+            builder.setMessage(username.substring(6) + "遇到危险！");//设置内容
+            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            AlertDialog dialog = builder.create();//获取dialog
+            dialog.show();//显示对话框
         }
 
     }

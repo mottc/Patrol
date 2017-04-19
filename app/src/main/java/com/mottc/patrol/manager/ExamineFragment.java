@@ -87,7 +87,9 @@ public class ExamineFragment extends Fragment {
     public void updateStaffList(String user,String status) {
 
         if (status.equals(Constant.ONLINE)) {
-            mStaffs.add(user);
+            if (!mStaffs.contains(user)) {
+                mStaffs.add(user);
+            }
         } else if (status.equals(Constant.OFFLINE)) {
             mStaffs.remove(user);
         }

@@ -2,7 +2,6 @@ package com.mottc.patrol.manager;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
@@ -113,7 +112,7 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void stopAskForLocation() {
-        EMMessage message = EMMessage.createTxtSendMessage(Constant.ASK_FOR_LOCATION, username);
+        EMMessage message = EMMessage.createTxtSendMessage(Constant.STOP_ASK_FOR_LOCATION, username);
         EMClient.getInstance().chatManager().sendMessage(message);
     }
 
@@ -129,7 +128,6 @@ public class MapActivity extends AppCompatActivity {
                     try {
                         content = new JSONObject(locationJson);
                         markLocation(content.getDouble("latitude"),content.getDouble("longitude"));
-                        Log.i("LocationListener", "onMessageReceived: " + content.getDouble("longitude"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -159,6 +157,5 @@ public class MapActivity extends AppCompatActivity {
 
         }
     }
-
 
 }

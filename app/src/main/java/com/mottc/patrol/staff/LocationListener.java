@@ -31,6 +31,7 @@ public class LocationListener implements BDLocationListener {
             public void onSuccess(final List<String> value) {
                 if (value.size() != 0) {
                     Log.i("LocationListener", "onSuccess: " + content);
+
                     EMMessage message = EMMessage.createTxtSendMessage(content, value.get(0));
                     EMClient.getInstance().chatManager().sendMessage(message);
                 }
@@ -139,4 +140,6 @@ public class LocationListener implements BDLocationListener {
     public void onConnectHotSpotMessage(String s, int i) {
 
     }
+
+
 }

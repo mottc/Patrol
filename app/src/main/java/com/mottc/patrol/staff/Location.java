@@ -37,7 +37,7 @@ public class Location {
         option.setScanSpan(span);
         //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
 
-        option.setIsNeedAddress(true);
+        option.setIsNeedAddress(false);
         //可选，设置是否需要地址信息，默认不需要
 
         option.setOpenGps(true);
@@ -66,5 +66,8 @@ public class Location {
 
     public void stopGetLocation() {
         mLocationClient.unRegisterLocationListener(myListener);
+        myListener = null;
+        mLocationClient.stop();
+
     }
 }

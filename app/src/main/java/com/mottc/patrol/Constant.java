@@ -15,4 +15,5 @@ public class Constant {
     public static final String ASK_FOR_LOCATION = "ask_for_location";
     public static final String LOCATION_CALLBACK = "location_callback";
     public static final String STOP_ASK_FOR_LOCATION = "stop_ask_for_location";
+    public static final String ASK_FOR_HELP = "ask_for_help";
 }
