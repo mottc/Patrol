@@ -2,10 +2,10 @@ package com.mottc.patrol.manager;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +14,7 @@ import com.mottc.patrol.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class ManagerAccountFragment extends Fragment {
@@ -23,11 +24,14 @@ public class ManagerAccountFragment extends Fragment {
     ImageView mAvatar;
     @BindView(R.id.username)
     TextView mUsername;
-    @BindView(R.id.staff_list)
-    RecyclerView mStaffList;
+    @BindView(R.id.damage_bt)
+    Button mDamageBt;
+
     Unbinder unbinder;
 
+
     private String username;
+
     public ManagerAccountFragment() {
         // Required empty public constructor
     }
@@ -51,7 +55,6 @@ public class ManagerAccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_manager_account, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         mUsername.setText(username.substring(8));
         return view;
     }
@@ -60,5 +63,10 @@ public class ManagerAccountFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.damage_bt)
+    public void onViewClicked() {
+
     }
 }

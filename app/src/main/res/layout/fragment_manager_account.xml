@@ -17,30 +17,20 @@
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:gravity="bottom"
-        android:paddingLeft="20dp"
-        android:text="账户"/>
+        android:paddingLeft="20dp"/>
 
-    <TextView
-        android:id="@+id/staff"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/damage_bt"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_below="@id/avatar"
-        android:text="员工列表："/>
+        android:layout_below="@id/username"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:background="@color/colorPrimary"
+        android:text="查看损坏"
+        android:textColor="@android:color/white"/>
 
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/staff_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:layout_below="@id/staff">
-
-    </android.support.v7.widget.RecyclerView>
 
 
 </RelativeLayout>

@@ -29,6 +29,7 @@ public class MapActivity extends AppCompatActivity {
     private BaiduMap mBaiduMap;
     private String username;
     private LocationListener mLocationListener;
+    private boolean isFirst = true;
 
 
     @Override
@@ -51,9 +52,11 @@ public class MapActivity extends AppCompatActivity {
 
     private void markLocation(double latitude, double longitude) {
 
-        LatLng current = new LatLng(latitude, longitude);
-        MapStatusUpdate mapStatus = MapStatusUpdateFactory.newLatLngZoom(current, 18);
-        mBaiduMap.setMapStatus(mapStatus);
+        if (isFirst) {
+            isFirst = false;
+            moveToCurrent(latitude, longitude);
+        }
+
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
         // 构造定位数据
@@ -67,6 +70,12 @@ public class MapActivity extends AppCompatActivity {
         // 设置定位图层的配置（定位模式，是否允许方向信息，用户自定义定位图标）
         MyLocationConfiguration config = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, false, null);
         mBaiduMap.setMyLocationConfiguration(config);
+    }
+
+    private void moveToCurrent(double latitude, double longitude) {
+        LatLng current = new LatLng(latitude, longitude);
+        MapStatusUpdate mapStatus = MapStatusUpdateFactory.newLatLngZoom(current, 18);
+        mBaiduMap.setMapStatus(mapStatus);
     }
 
 
