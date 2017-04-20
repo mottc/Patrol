@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class PatrolFragment extends Fragment {
     private String fileName;
     private static final int CAMERA_REQUEST_CODE = 1;
     public static final int REQUEST_CODE_ASK_CAMERA = 123;
+    private String imagePath;
 
 
 
@@ -172,13 +174,15 @@ public class PatrolFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void sendImage(final String path) {
+    private void sendImage(String path) {
 
+        imagePath = path;
+        Log.i("PatrolFragment", "sendImage: " + imagePath);
         EMClient.getInstance().contactManager().aysncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
             @Override
-            public void onSuccess(final List<String> value) {
+            public void onSuccess(List<String> value) {
                 if (value.size() != 0) {
-                    EMMessage message = EMMessage.createImageSendMessage(path, true, value.get(0));
+                    EMMessage message = EMMessage.createImageSendMessage(imagePath, false, value.get(0));
                     EMClient.getInstance().chatManager().sendMessage(message);
                 }
 

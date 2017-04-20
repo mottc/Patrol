@@ -2,6 +2,7 @@ package com.mottc.patrol.manager;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.mottc.patrol.Constant;
 import com.mottc.patrol.PatrolApplication;
 import com.mottc.patrol.R;
 import com.mottc.patrol.choose.ChooseActivity;
+import com.mottc.patrol.data.entity.ImageURL;
 import com.mottc.patrol.issued.IssuedActivity;
 import com.mottc.patrol.staff.ViewPagerAdapter;
 
@@ -48,6 +50,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
     BottomNavigationView mBnvMenu;
     @BindView(R.id.more)
     ImageView mMore;
+
 
     private MenuItem mMenuItem = null;
     private PatrolManagerContactListener mPatrolManagerContactListener;
@@ -283,6 +286,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
         });
     }
 
+
     private class PatrolManagerContactListener implements EMContactListener {
 
         public void notificationWithoutIntent(String content) {
@@ -331,27 +335,63 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
     }
 
     private class PatrolMessageListener implements EMMessageListener {
+
+        private String username;
+        private EMImageMessageBody emImageMessageBody;
+
+
+        public void notificationWithIntent(String text) {
+            Intent intent = new Intent(ManagerActivity.this, ShowImagesActivity.class);
+            PendingIntent pIntent = PendingIntent.getActivity(ManagerActivity.this, 1, intent, 0);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle("")
+                    .setContentText(text)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setContentIntent(pIntent)
+                    .setAutoCancel(true);
+
+            mNotificationManager.notify((int) System.currentTimeMillis(), builder.build());
+
+        }
+
+
         @Override
         public void onMessageReceived(List<EMMessage> messages) {
 
-            for (final EMMessage message : messages) {
-                if (message.getType() == EMMessage.Type.TXT) {
+
+            for (EMMessage message : messages) {
+                if (message.getType().equals(EMMessage.Type.TXT)) {
                     if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.ONLINE)) {
                         ExamineFragment.newInstance().updateStaffList(message.getFrom(), Constant.ONLINE);
                     } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.OFFLINE)) {
                         ExamineFragment.newInstance().updateStaffList(message.getFrom(), Constant.OFFLINE);
                     } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.ASK_FOR_HELP)) {
+                        username = message.getFrom();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                showDialog(message.getFrom());
+                                showDialog(username);
                             }
                         });
                     }
-                } else if (message.getType() == EMMessage.Type.IMAGE) {
-//                TODO:    显示一个Intent通知
-                    Toast.makeText(ManagerActivity.this, ((EMImageMessageBody) message.getBody()).getThumbnailUrl()
-                            , Toast.LENGTH_SHORT).show();
+                } else if (message.getType().equals(EMMessage.Type.IMAGE)) {
+
+                    emImageMessageBody = (EMImageMessageBody) message.getBody();
+
+                    ImageURL imageURL = new ImageURL();
+                    imageURL.setManager(PatrolApplication.getInstance().getCurrentUserName());
+                    imageURL.setUrl(emImageMessageBody.getThumbnailUrl());
+                    PatrolApplication.getInstance().getDaoSession().getImageURLDao().insert(imageURL);
+                    ManagerActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            notificationWithIntent("有员工上传了损坏照片");
+
+                        }
+                    });
+
                 }
             }
         }

@@ -15,6 +15,7 @@
         android:id="@+id/avatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_margin="5dp"
         android:layout_below="@id/issued_bar"
         android:scaleType="fitXY"
         android:src="@drawable/staff"/>

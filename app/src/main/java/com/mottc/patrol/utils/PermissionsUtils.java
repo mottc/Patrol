@@ -13,7 +13,7 @@ import android.support.v4.app.ActivityCompat;
  */
 public class PermissionsUtils {
     private static final int REQUEST_EXTERNAL_STORAGE = 125;
-    public final static int REQUEST_CODE_ASK_LOCATION = 124;
+    public static final int REQUEST_CODE_ASK_LOCATION = 124;
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
