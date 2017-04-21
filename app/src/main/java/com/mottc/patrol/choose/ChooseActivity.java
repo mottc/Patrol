@@ -37,6 +37,8 @@ public class ChooseActivity extends AppCompatActivity {
 
         //如果登录成功过，直接进入主页面
         if (EMClient.getInstance().isLoggedInBefore()) {
+            EMClient.getInstance().groupManager().loadAllGroups();
+            EMClient.getInstance().chatManager().loadAllConversations();
             if (PatrolApplication.getInstance().getCurrentUserName().startsWith("staff_")) {
                 startActivity(new Intent(this, StaffActivity.class));
             } else {

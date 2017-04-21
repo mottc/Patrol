@@ -68,11 +68,6 @@ public class ExamineFragment extends Fragment {
             recyclerView.setAdapter(mExamineRecyclerViewAdapter);
         }
 
-
-//        updateStaffList(null,null);
-        initOnlineStaffList();
-
-
         return view;
     }
 
@@ -83,7 +78,9 @@ public class ExamineFragment extends Fragment {
             for (EMMessage message : emMessages) {
                 if (message.getType().equals(EMMessage.Type.TXT)) {
                     if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.ONLINE)) {
-                        mStaffs.add(message.getFrom());
+                        if (!mStaffs.contains(message.getFrom())) {
+                            mStaffs.add(message.getFrom());
+                        }
                         return;
                     } else if (((EMTextMessageBody) message.getBody()).getMessage().equals(Constant.OFFLINE)) {
                         return;

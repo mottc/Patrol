@@ -246,6 +246,8 @@ public class LoginActivity extends AppCompatActivity {
     private void autoLogin() {
         //如果登录成功过，直接进入主页面
         if (EMClient.getInstance().isLoggedInBefore()) {
+            EMClient.getInstance().groupManager().loadAllGroups();
+            EMClient.getInstance().chatManager().loadAllConversations();
             if (isStaff) {
                 startActivity(new Intent(this, StaffActivity.class));
             } else {
