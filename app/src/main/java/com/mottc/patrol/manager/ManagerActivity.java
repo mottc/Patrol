@@ -56,6 +56,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
     private PatrolManagerContactListener mPatrolManagerContactListener;
     private PatrolMessageListener mPatrolMessageListener;
     private NotificationManager mNotificationManager;
+    private EditText editText;
 
 
     @Override
@@ -148,6 +149,7 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
     @OnClick(R.id.more)
     public void onViewClicked() {
 
+
         final String items[] = {"删除员工", "添加员工", "退出登录"};
         new AlertDialog.Builder(ManagerActivity.this)
                 .setItems(items, new DialogInterface.OnClickListener() {
@@ -156,7 +158,8 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
 
                         switch (which) {
                             case 0:
-                                final EditText editText = new EditText(ManagerActivity.this);
+                                editText = new EditText(ManagerActivity.this);
+
                                 new AlertDialog.Builder(ManagerActivity.this)
                                         .setTitle("请输入要删除的员工用户名：")
                                         .setView(editText)
@@ -211,14 +214,14 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
                                 break;
                             case 1:
 
-                                final EditText editText1 = new EditText(ManagerActivity.this);
+                               editText = new EditText(ManagerActivity.this);
                                 new AlertDialog.Builder(ManagerActivity.this)
                                         .setTitle("请输入要添加的员工用户名：")
-                                        .setView(editText1)
+                                        .setView(editText)
                                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                String username = editText1.getText().toString().trim();
+                                                String username = editText.getText().toString().trim();
                                                 if (TextUtils.isEmpty(username)) {
                                                     Toast.makeText(getApplicationContext(), "请输入用户名", Toast.LENGTH_SHORT).show();
 
