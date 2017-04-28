@@ -27,8 +27,6 @@ public class MyInfo {
     /**
      * 单例模式，获取instance实例
      *
-     * @param cxt
-     * @return
      */
     public static MyInfo getInstance(Context cxt) {
         if (mPreferenceUtils == null) {

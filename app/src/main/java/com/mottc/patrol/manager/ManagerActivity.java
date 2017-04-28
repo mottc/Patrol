@@ -391,7 +391,6 @@ public class ManagerActivity extends AppCompatActivity implements IssuedFragment
                         @Override
                         public void run() {
                             notificationWithIntent("有员工上传了损坏照片");
-
                         }
                     });
 
